@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -12,7 +12,7 @@
 
 <meta name="author" content="Francois Michonneau" />
 
-<meta name="date" content="2017-02-06" />
+<meta name="date" content="2017-05-22" />
 
 <title>Quick start</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Quick start</h1>
 <h4 class="author"><em>Francois Michonneau</em></h4>
-<h4 class="date"><em>2017-02-06</em></h4>
+<h4 class="date"><em>2017-05-22</em></h4>
 
 
 
@@ -79,84 +79,89 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p><code>foghorn</code> provides a graphical summary for CRAN check results for the packages maintained by individuals (the number is parentheses indicates the number of R flavors used by CRAN that generate notes, warnings, errors):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Graphical interface
 <span class="kw">summary_cran_results</span>(<span class="dt">email =</span> <span class="st">&quot;francois.michonneau@gmail.com&quot;</span>)</code></pre></div>
+<pre><code>## ✖  Package with errors on CRAN: 
+##   - foghorn (11)</code></pre>
 <pre><code>## ⚠  Packages with warnings on CRAN: 
-##   - rncl (4)
+##   - rncl (3)
 ##   - rotl (1)</code></pre>
 <pre><code>## ★  Package with notes on CRAN: 
-##   - rncl (2)</code></pre>
+##   - rncl (6)</code></pre>
 <p>The information can also be summarized as a table:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Summary as a tibble
 <span class="kw">check_cran_results</span>(<span class="dt">email =</span> <span class="st">&quot;francois.michonneau@gmail.com&quot;</span>)</code></pre></div>
-<pre><code>## # A tibble: 4 × 7
-##     Package ERROR  FAIL  WARN  NOTE    OK has_memtest_notes
-##       &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;             &lt;lgl&gt;
-## 1 phylobase    NA    NA    NA    NA    13             FALSE
-## 2  riceware    NA    NA    NA    NA    13             FALSE
-## 3      rncl    NA    NA     4     2     7             FALSE
-## 4      rotl    NA    NA     1    NA    12             FALSE</code></pre>
+<pre><code>## # A tibble: 5 x 7
+##     Package ERROR  FAIL  WARN  NOTE    OK has_other_issues
+##       &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;            &lt;lgl&gt;
+## 1   foghorn    11    NA    NA    NA     2            FALSE
+## 2 phylobase    NA    NA    NA    NA    13            FALSE
+## 3  riceware    NA    NA    NA    NA    13            FALSE
+## 4      rncl    NA    NA     3     6     4            FALSE
+## 5      rotl    NA    NA     1    NA    12            FALSE</code></pre>
 <p>In addition of your own packages, you can also check the results for other packages that might be of interest to you:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## either by themselves
 <span class="kw">summary_cran_results</span>(<span class="dt">pkg =</span> <span class="kw">c</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;dplyr&quot;</span>))</code></pre></div>
-<pre><code>## ✖  Package with errors on CRAN: 
+<pre><code>## ✖  Packages with errors on CRAN: 
+##   - dplyr (11)
 ##   - ggplot2 (2)</code></pre>
-<pre><code>## ⚠  Packages with warnings on CRAN: 
-##   - dplyr (1)
-##   - ggplot2 (1)</code></pre>
+<pre><code>## ⚠  Package with warnings on CRAN: 
+##   - dplyr (1)</code></pre>
 <pre><code>## ★  Packages with notes on CRAN: 
-##   - dplyr (7)
+##   - dplyr (1)
 ##   - ggplot2 (4)</code></pre>
-<pre><code>## ◉  Package with memtest on CRAN: 
+<pre><code>## ◉  Package with other issues on CRAN: 
 ##   - dplyr</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">check_cran_results</span>(<span class="dt">pkg =</span> <span class="kw">c</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;dplyr&quot;</span>))</code></pre></div>
-<pre><code>## # A tibble: 2 × 7
-##   Package ERROR  FAIL  WARN  NOTE    OK has_memtest_notes
-##     &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;             &lt;lgl&gt;
-## 1   dplyr    NA    NA     1     7     5              TRUE
-## 2 ggplot2     2    NA     1     4     6             FALSE</code></pre>
+<pre><code>## # A tibble: 2 x 7
+##   Package ERROR  FAIL  WARN  NOTE    OK has_other_issues
+##     &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;            &lt;lgl&gt;
+## 1   dplyr    11    NA     1     1    NA             TRUE
+## 2 ggplot2     2    NA    NA     4     7            FALSE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## or by combining them with email addresses
 <span class="kw">summary_cran_results</span>(<span class="dt">email =</span> <span class="st">&quot;francois.michonneau@gmail.com&quot;</span>,
                      <span class="dt">pkg =</span> <span class="kw">c</span>(<span class="st">&quot;mregions&quot;</span>, <span class="st">&quot;ridigbio&quot;</span>))</code></pre></div>
+<pre><code>## ✖  Package with errors on CRAN: 
+##   - foghorn (11)</code></pre>
 <pre><code>## ⚠  Packages with warnings on CRAN: 
-##   - rncl (4)
+##   - rncl (3)
 ##   - rotl (1)</code></pre>
 <pre><code>## ★  Packages with notes on CRAN: 
-##   - mregions (1)
-##   - rncl (2)</code></pre>
+##   - mregions (2)
+##   - rncl (6)</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">check_cran_results</span>(<span class="dt">email =</span> <span class="st">&quot;francois.michonneau@gmail.com&quot;</span>,
                    <span class="dt">pkg =</span> <span class="kw">c</span>(<span class="st">&quot;mregions&quot;</span>, <span class="st">&quot;ridigbio&quot;</span>))</code></pre></div>
-<pre><code>## # A tibble: 6 × 7
-##     Package ERROR  FAIL  WARN  NOTE    OK has_memtest_notes
-##       &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;             &lt;lgl&gt;
-## 1  mregions    NA    NA    NA     1    12             FALSE
-## 2  ridigbio    NA    NA    NA    NA    13             FALSE
-## 3 phylobase    NA    NA    NA    NA    13             FALSE
-## 4  riceware    NA    NA    NA    NA    13             FALSE
-## 5      rncl    NA    NA     4     2     7             FALSE
-## 6      rotl    NA    NA     1    NA    12             FALSE</code></pre>
+<pre><code>## # A tibble: 7 x 7
+##     Package ERROR  FAIL  WARN  NOTE    OK has_other_issues
+##       &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;            &lt;lgl&gt;
+## 1  mregions    NA    NA    NA     2    11            FALSE
+## 2  ridigbio    NA    NA    NA    NA    13            FALSE
+## 3   foghorn    11    NA    NA    NA     2            FALSE
+## 4 phylobase    NA    NA    NA    NA    13            FALSE
+## 5  riceware    NA    NA    NA    NA    13            FALSE
+## 6      rncl    NA    NA     3     6     4            FALSE
+## 7      rotl    NA    NA     1    NA    12            FALSE</code></pre>
 <p>You can also inspect the logs for the check results using <code>show_cran_results(pkg)</code>, while <code>visit_cran_check(pkg)</code> takes you to the CRAN webpage.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">show_cran_results</span>(<span class="dt">pkg =</span> <span class="st">&quot;tidyr&quot;</span>)</code></pre></div>
 <pre><code>## ★ tidyr - NOTE: data for non-ASCII characters
 ##    ❯ r-devel-linux-x86_64-fedora-clang 
 ##    ❯ r-devel-linux-x86_64-fedora-gcc 
-##    ❯ r-devel-macos-x86_64-clang 
+##    ❯ r-patched-solaris-x86 
 ## 
 ##       Note: found 23 marked UTF-8 strings
 ## 
 ## ★ tidyr - NOTE: data for non-ASCII characters
 ##    ❯ r-patched-solaris-sparc 
-##    ❯ r-patched-solaris-x86 
-##    ❯ r-release-osx-x86_64-mavericks 
-##    ❯ r-oldrel-windows-ix86+x86_64 
+##    ❯ r-release-osx-x86_64 
+##    ❯ r-oldrel-osx-x86_64 
 ## 
 ##       Note: found 23 marked UTF-8 strings</code></pre>
 <div id="where-does-it-get-the-data" class="section level2">
 <h2>Where does it get the data?</h2>
 <p>The data from the CRAN check results used by this package are either scrapped from the CRAN web pages (default), or are from the CRAN database. The first option is faster if you want to check regularly a few packages. However, if you are doing statistics on a large number of packages, using the CRAN database is recommended. To use the CRAN database, add <code>src = &quot;crandb&quot;</code> in your function calls:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">check_cran_results</span>(<span class="dt">pkg =</span> <span class="st">&quot;nlme&quot;</span>, <span class="dt">src =</span> <span class="st">&quot;crandb&quot;</span>)</code></pre></div>
-<pre><code>## # A tibble: 1 × 7
-##   Package ERROR  FAIL  WARN  NOTE    OK has_memtest_notes
-##     &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;             &lt;lgl&gt;
-## 1    nlme    NA    NA    NA    NA    13             FALSE</code></pre>
+<pre><code>## # A tibble: 1 x 7
+##   Package ERROR  FAIL  WARN  NOTE    OK has_other_issues
+##     &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;            &lt;lgl&gt;
+## 1    nlme     1    NA    NA    NA    12            FALSE</code></pre>
 <p>Check out the “Details” section in the help files for more information.</p>
 </div>
 <div id="feedback-suggestions" class="section level2">
@@ -171,7 +176,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
