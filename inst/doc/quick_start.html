@@ -12,7 +12,7 @@
 
 <meta name="author" content="Francois Michonneau" />
 
-<meta name="date" content="2017-12-05" />
+<meta name="date" content="2018-02-28" />
 
 <title>Quick start</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Quick start</h1>
 <h4 class="author"><em>Francois Michonneau</em></h4>
-<h4 class="date"><em>2017-12-05</em></h4>
+<h4 class="date"><em>2018-02-28</em></h4>
 
 
 
@@ -80,72 +80,87 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p><code>summary_cran_results()</code> provides you with a graphical summary of the results of the CRAN checks. The number in parenthesis after the name of the package indicates the number of platforms used by CRAN that produced this result.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Graphical interface
 <span class="kw">summary_cran_results</span>(<span class="dt">email =</span> <span class="st">&quot;francois.michonneau@gmail.com&quot;</span>)</code></pre></div>
-<pre><code>## ✔ All clear for foghorn, phylobase, riceware, rotl!</code></pre>
-<pre><code>## ⚠  Package with warnings on CRAN: 
-##   - rncl (3)</code></pre>
-<pre><code>## ★  Package with notes on CRAN: 
+<pre><code>## ✔ All clear for riceware!</code></pre>
+<pre><code>## ✖  Packages with errors on CRAN: 
+##   - foghorn (1)
+##   - phylobase (1)</code></pre>
+<pre><code>## ⚠  Packages with warnings on CRAN: 
+##   - rncl (3)
+##   - rotl (1)</code></pre>
+<pre><code>## ★  Packages with notes on CRAN: 
+##   - foghorn (3)
 ##   - rncl (6)</code></pre>
 <p><code>summary_cran_results()</code> is actually an alias of <code>summary(cran_results())</code>, meaning that you can call <code>cran_results()</code> directly if you want to easily access the underlying data for the results of the CRAN checks. These results are stored in a tibble.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Results as a tibble
 <span class="kw">cran_results</span>(<span class="dt">email =</span> <span class="st">&quot;francois.michonneau@gmail.com&quot;</span>)</code></pre></div>
 <pre><code>## # A tibble: 5 x 7
-##     package error  fail  warn  note    ok has_other_issues
-##       &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;            &lt;lgl&gt;
-## 1   foghorn     0     0     0     0    12            FALSE
-## 2 phylobase     0     0     0     0    12            FALSE
-## 3  riceware     0     0     0     0    12            FALSE
-## 4      rncl     0     0     3     6     3            FALSE
-## 5      rotl     0     0     0     0    12            FALSE</code></pre>
+##   package   error  fail  warn  note    ok has_other_issues
+##   &lt;chr&gt;     &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;lgl&gt;           
+## 1 foghorn       1     0     0     3     8 FALSE           
+## 2 phylobase     1     0     0     0    11 FALSE           
+## 3 riceware      0     0     0     0    12 FALSE           
+## 4 rncl          0     0     3     6     3 FALSE           
+## 5 rotl          0     0     1     0    11 FALSE</code></pre>
 <p>In addition of your own packages, you can also check the results for any other packages that might be of interest to you:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## either by themselves
 <span class="kw">summary_cran_results</span>(<span class="dt">pkg =</span> <span class="kw">c</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;dplyr&quot;</span>))</code></pre></div>
-<pre><code>## ✖  Package with errors on CRAN: 
+<pre><code>## ✖  Packages with errors on CRAN: 
+##   - dplyr (9)
 ##   - ggplot2 (1)</code></pre>
 <pre><code>## ★  Packages with notes on CRAN: 
-##   - dplyr (8)
+##   - dplyr (3)
 ##   - ggplot2 (4)</code></pre>
 <pre><code>## ◉  Package with other issues on CRAN: 
 ##   - dplyr</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cran_results</span>(<span class="dt">pkg =</span> <span class="kw">c</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;dplyr&quot;</span>))</code></pre></div>
 <pre><code>## # A tibble: 2 x 7
 ##   package error  fail  warn  note    ok has_other_issues
-##     &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;            &lt;lgl&gt;
-## 1   dplyr     0     0     0     8     4             TRUE
-## 2 ggplot2     1     0     0     4     7            FALSE</code></pre>
+##   &lt;chr&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;lgl&gt;           
+## 1 dplyr       9     0     0     3     0 TRUE            
+## 2 ggplot2     1     0     0     4     7 FALSE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## or by combining them with email addresses
 <span class="kw">summary_cran_results</span>(<span class="dt">email =</span> <span class="st">&quot;francois.michonneau@gmail.com&quot;</span>,
                      <span class="dt">pkg =</span> <span class="kw">c</span>(<span class="st">&quot;mregions&quot;</span>, <span class="st">&quot;ridigbio&quot;</span>))</code></pre></div>
-<pre><code>## ✔ All clear for foghorn, mregions, phylobase, riceware, ridigbio, rotl!</code></pre>
-<pre><code>## ⚠  Package with warnings on CRAN: 
-##   - rncl (3)</code></pre>
-<pre><code>## ★  Package with notes on CRAN: 
+<pre><code>## ✔ All clear for mregions, riceware, ridigbio!</code></pre>
+<pre><code>## ✖  Packages with errors on CRAN: 
+##   - foghorn (1)
+##   - phylobase (1)</code></pre>
+<pre><code>## ⚠  Packages with warnings on CRAN: 
+##   - rncl (3)
+##   - rotl (1)</code></pre>
+<pre><code>## ★  Packages with notes on CRAN: 
+##   - foghorn (3)
 ##   - rncl (6)</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cran_results</span>(<span class="dt">email =</span> <span class="st">&quot;francois.michonneau@gmail.com&quot;</span>,
                    <span class="dt">pkg =</span> <span class="kw">c</span>(<span class="st">&quot;mregions&quot;</span>, <span class="st">&quot;ridigbio&quot;</span>))</code></pre></div>
 <pre><code>## # A tibble: 7 x 7
-##     package error  fail  warn  note    ok has_other_issues
-##       &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;            &lt;lgl&gt;
-## 1   foghorn     0     0     0     0    12            FALSE
-## 2  mregions     0     0     0     0    12            FALSE
-## 3 phylobase     0     0     0     0    12            FALSE
-## 4  riceware     0     0     0     0    12            FALSE
-## 5  ridigbio     0     0     0     0    12            FALSE
-## 6      rncl     0     0     3     6     3            FALSE
-## 7      rotl     0     0     0     0    12            FALSE</code></pre>
+##   package   error  fail  warn  note    ok has_other_issues
+##   &lt;chr&gt;     &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;lgl&gt;           
+## 1 foghorn       1     0     0     3     8 FALSE           
+## 2 mregions      0     0     0     0    12 FALSE           
+## 3 phylobase     1     0     0     0    11 FALSE           
+## 4 riceware      0     0     0     0    12 FALSE           
+## 5 ridigbio      0     0     0     0    12 FALSE           
+## 6 rncl          0     0     3     6     3 FALSE           
+## 7 rotl          0     0     1     0    11 FALSE</code></pre>
 <p>You can inspect the logs for the check results using <code>summary_cran_details(pkg)</code> (or <code>summary(cran_details(pkg))</code>), while <code>visit_cran_check(pkg)</code> takes you directly to the CRAN webpage.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tidyr_details &lt;-<span class="st"> </span><span class="kw">cran_details</span>(<span class="dt">pkg =</span> <span class="st">&quot;tidyr&quot;</span>)
 tidyr_details</code></pre></div>
-<pre><code>## # A tibble: 1 x 7
-##   package version result                         check
-## *   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;                         &lt;chr&gt;
-## 1   tidyr   0.7.2   NOTE data for non-ASCII characters
-## # ... with 3 more variables: flavors &lt;chr&gt;, n_flavors &lt;dbl&gt;, message &lt;chr&gt;</code></pre>
+<pre><code>## # A tibble: 2 x 7
+##   package version result check    flavors             n_flavors message   
+## * &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;                   &lt;dbl&gt; &lt;chr&gt;     
+## 1 tidyr   0.8.0   NOTE   data fo… r-devel-linux-x86_…        4. &quot;     Not…
+## 2 tidyr   0.7.2   NOTE   data fo… r-oldrel-osx-x86_64        2. &quot;     Not…</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(tidyr_details)</code></pre></div>
 <pre><code>## ★ tidyr - note: data for non-ASCII characters
 ##    ❯ r-devel-linux-x86_64-fedora-clang 
 ##    ❯ r-devel-linux-x86_64-fedora-gcc 
 ##    ❯ r-patched-solaris-x86 
 ##    ❯ r-release-osx-x86_64 
+## 
+##      Note: found 23 marked UTF-8 strings
+## 
+## ★ tidyr - note: data for non-ASCII characters
 ##    ❯ r-oldrel-osx-x86_64 
 ## 
 ##      Note: found 23 marked UTF-8 strings</code></pre>
@@ -153,10 +168,6 @@ tidyr_details</code></pre></div>
 <h2>Where does it get the data?</h2>
 <p>The data from the check results used by this package are either scrapped from the CRAN web pages (default), or are from the CRAN database (that CRAN uses to build the webpages). The first option is faster if you want to regularly check a few packages. However, if you are doing statistics on a large number of packages, using the CRAN database is recommended (it’s about 20Mb of data). To use the CRAN database, add <code>src = &quot;crandb&quot;</code> in your function calls:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cran_results</span>(<span class="dt">pkg =</span> <span class="st">&quot;nlme&quot;</span>, <span class="dt">src =</span> <span class="st">&quot;crandb&quot;</span>)</code></pre></div>
-<pre><code>## # A tibble: 1 x 7
-##   package error  fail  warn  note    ok has_other_issues
-##     &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;            &lt;lgl&gt;
-## 1    nlme     1     0     0     0    11            FALSE</code></pre>
 <p>Check out the “Details” section in the help files for more information.</p>
 </div>
 <div id="feedback-suggestions" class="section level2">

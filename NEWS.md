@@ -1,3 +1,12 @@
+## v1.0.1
+
+## New features
+
+* Add `cran_incoming()` to retrieve the list of packages currently in the CRAN
+  incoming queue. Feature requested by @krlmlr, #24.
+  
+* `foghorn` is now compatible with R >= 3.1. Suggested by @jimhester, #26.
+
 ## v1.0.0
 
 ### API changes

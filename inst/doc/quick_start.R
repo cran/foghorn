@@ -26,6 +26,6 @@ tidyr_details <- cran_details(pkg = "tidyr")
 tidyr_details
 summary(tidyr_details)
 
-## ----show-cran-db--------------------------------------------------------
-cran_results(pkg = "nlme", src = "crandb")
+## ----show-cran-db, eval=FALSE--------------------------------------------
+#  cran_results(pkg = "nlme", src = "crandb")
 
