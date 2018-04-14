@@ -1,6 +1,6 @@
 Package: foghorn
 Title: Summarize CRAN Check Results in the Terminal
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: c(person("Francois", "Michonneau", role=c("aut", "cre"),
                     email="francois.michonneau@gmail.com"),
              person("Ben", "Bolker", role="ctb"))
@@ -18,9 +18,9 @@ BugReports: https://github.com/fmichonneau/foghorn/issues
 Suggests: progress, testthat, covr, knitr, rmarkdown, dplyr
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2018-02-28 20:04:00 UTC; francois
+Packaged: 2018-04-14 13:37:17 UTC; francois
 Author: Francois Michonneau [aut, cre],
   Ben Bolker [ctb]
 Maintainer: Francois Michonneau <francois.michonneau@gmail.com>
 Repository: CRAN
-Date/Publication: 2018-02-28 20:16:38 UTC
+Date/Publication: 2018-04-14 13:55:11 UTC
