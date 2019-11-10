@@ -1,3 +1,21 @@
+# v1.1.2
+
+## New feature
+
+* The documentation of `cran_incoming()` is improved (#35 by @bbolker).
+* The folder `waiting` in the CRAN submission queue wasn't documented and could
+  not be inspected by using the argument `folders` in the function
+  `cran_incoming()` (#35 by @bbolker and #38, reported by @HenrikBengtsson).
+
+## Other changes
+
+* The vignette "Quick start" has been renamed "Get started" so it could be more
+  visible and easily accessible in the documentation website (#36 reported by
+  @maelle).
+* The argument `v.names` in the function `stats::reshape` wasn't fully spelled
+  (#37 by @jennybc).
+
+
 # v1.1.0
 
 ## New features
@@ -15,7 +33,7 @@
 * `foghorn` would, in some cases, return that a valid package name published on
   CRAN did not exit (#29, @zkamvar).
 * The recent `newbies` folder found on the CRAN FTP incoming server has been
-  added to the list of places to check packages in CRAN's submisison queue
+  added to the list of places to check packages in CRAN's submissison queue
   (#32).
 * When a package only had "additional issues", the summary functions would
   report that everything was clear (#33, @coatless)

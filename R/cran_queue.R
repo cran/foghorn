@@ -1,5 +1,7 @@
 parse_cran_incoming <- function(res) {
-  if (length(res$content) == 0) return(NULL)
+  if (length(res$content) == 0) {
+    return(NULL)
+  }
   rr <- read.table(
     text = rawToChar(res$content),
     stringsAsFactors = FALSE
@@ -34,18 +36,20 @@ parse_pkg <- function(pkg) {
 ##' the packages that are currently in the queue, and the folder where they are
 ##' located. This information could help you track your package submission. Only
 ##' the following folders are considered (approximately in order of the CRAN
-##' queue sequence): `newbies`, `inspect`, `pretest`, `recheck`, `pending`, `publish`, `archive`.
-##' The folders named after the initials of the CRAN volunteers are not inspected.
+##' queue sequence): `newbies`, `inspect`, `pretest`, `recheck`, `pending`,
+##' `waiting`, `publish`, `archive`. The folders named after the initials of the
+##' CRAN volunteers are not inspected.
 ##'
 ##' @note
-##' The meaning of the package folders is as follows (see
-##' Hornik, Ligges and Zeileis \url{https://journal.r-project.org/archive/2018-1/cran.pdf}):
+##' The meaning of the package folders is as follows
+##'  (see Hornik, Ligges and Zeileis \url{https://journal.r-project.org/archive/2018-1/cran.pdf} and Uwe Ligges mailing list comment \url{https://stat.ethz.ch/pipermail/r-package-devel/2019q1/003631.html}):
 ##' \describe{
 ##' \item{newbies}{for first time submission; package will be manually inspected.}
 ##' \item{inspect}{package is awaiting manual inspection; always happens for first time submissions and for packages with problems that are likely to be false positives}
 ##' \item{pretest}{a human has triggered a new auto-check of the package}
 ##' \item{recheck}{package has passed checks and is waiting for reverse dependency checking}
-##' \item{pending}{CRAN's decision is waiting for a response from the package maintainer, e.g. when issues are present that CRAN cannot check for in the incoming checks}
+##' \item{pending}{a CRAN team member has to do a closer inspection and needs more time}
+##' \item{waiting}{CRAN's decision is waiting for a response from the package maintainer, e.g. when issues are present that CRAN cannot check for in the incoming checks}
 ##' \item{publish}{package is awaiting publication}
 ##' \item{archive}{package rejected: it does not pass the checks cleanly and the problems are unlikely to be false positives}
 ##' }
@@ -86,11 +90,11 @@ parse_pkg <- function(pkg) {
 ##' @export
 ##' @md
 cran_incoming <- function(pkg = NULL,
-                          folders = c("newbies", "inspect", "pretest", "recheck", "pending", "publish", "archive")) {
-    if (!is.null(pkg) &&
-        (!is.character(pkg) || any(is.na(pkg)))) {
-        stop(sQuote("pkg"), " must be a character vector.")
-    }
+                          folders = c("newbies", "inspect", "pretest", "recheck", "pending", "publish", "archive", "waiting")) {
+  if (!is.null(pkg) &&
+    (!is.character(pkg) || any(is.na(pkg)))) {
+    stop(sQuote("pkg"), " must be a character vector.")
+  }
 
   folders <- match.arg(folders, several.ok = TRUE)
 
