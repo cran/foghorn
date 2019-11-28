@@ -1,4 +1,9 @@
-# v1.1.2
+# v1.1.4
+
+* The number of CRAN check flavors is now 13. Code and tests have been adjusted
+  to take this change into account.
+
+# v1.1.3
 
 ## New feature
 

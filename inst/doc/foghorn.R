@@ -1,16 +1,16 @@
-## ----example-------------------------------------------------------------
+## ----example------------------------------------------------------------------
 ## load the package
 library(foghorn)
 
-## ----graphical-interface-------------------------------------------------
+## ----graphical-interface------------------------------------------------------
 ## Graphical interface
 summary_cran_results(email = "francois.michonneau@gmail.com")
 
-## ----tibble--------------------------------------------------------------
+## ----tibble-------------------------------------------------------------------
 ## Results as a tibble
 cran_results(email = "francois.michonneau@gmail.com")
 
-## ----package-name--------------------------------------------------------
+## ----package-name-------------------------------------------------------------
 ## either by themselves
 summary_cran_results(pkg = c("ggplot2", "dplyr"))
 cran_results(pkg = c("ggplot2", "dplyr"))
@@ -21,11 +21,11 @@ summary_cran_results(email = "francois.michonneau@gmail.com",
 cran_results(email = "francois.michonneau@gmail.com",
                    pkg = c("mregions", "ridigbio"))
 
-## ----cran-details--------------------------------------------------------
+## ----cran-details-------------------------------------------------------------
 tidyr_details <- cran_details(pkg = "tidyr")
 tidyr_details
 summary(tidyr_details)
 
-## ----show-cran-db, eval=FALSE--------------------------------------------
+## ----show-cran-db, eval=FALSE-------------------------------------------------
 #  cran_results(pkg = "nlme", src = "crandb")
 

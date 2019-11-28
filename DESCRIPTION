@@ -1,6 +1,6 @@
 Package: foghorn
 Title: Summarize CRAN Check Results in the Terminal
-Version: 1.1.3
+Version: 1.1.4
 Authors@R: 
     c(person(given = "Francois",
              family = "Michonneau",
@@ -9,7 +9,8 @@ Authors@R:
       person(given = "Ben",
              family = "Bolker",
              role = "ctb"))
-Description: The CRAN check results in your R terminal.
+Description: The CRAN check results and where your package stands in the
+    CRAN submission queue in your R terminal.
 License: MIT + file LICENSE
 URL: https://github.com/fmichonneau/foghorn
 BugReports: https://github.com/fmichonneau/foghorn/issues
@@ -21,11 +22,11 @@ Suggests: covr, dplyr, knitr, progress, rmarkdown, testthat
 VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.99.9001
+RoxygenNote: 7.0.1.9000
 NeedsCompilation: no
-Packaged: 2019-11-10 09:56:49 UTC; francois
+Packaged: 2019-11-28 16:05:41 UTC; francois
 Author: Francois Michonneau [aut, cre],
   Ben Bolker [ctb]
 Maintainer: Francois Michonneau <francois.michonneau@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-11-10 10:10:02 UTC
+Date/Publication: 2019-11-28 16:30:03 UTC
