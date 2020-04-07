@@ -1,6 +1,6 @@
 Package: foghorn
 Title: Summarize CRAN Check Results in the Terminal
-Version: 1.1.4
+Version: 1.1.5
 Authors@R: 
     c(person(given = "Francois",
              family = "Michonneau",
@@ -22,11 +22,11 @@ Suggests: covr, dplyr, knitr, progress, rmarkdown, testthat
 VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.0.1.9000
+RoxygenNote: 7.1.0.9000
 NeedsCompilation: no
-Packaged: 2019-11-28 16:05:41 UTC; francois
+Packaged: 2020-04-07 19:30:18 UTC; francois
 Author: Francois Michonneau [aut, cre],
   Ben Bolker [ctb]
 Maintainer: Francois Michonneau <francois.michonneau@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-11-28 16:30:03 UTC
+Date/Publication: 2020-04-07 19:50:02 UTC
