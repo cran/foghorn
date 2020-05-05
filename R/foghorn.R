@@ -1,7 +1,3 @@
-## maximum number of CRAN check results that can be expected.
-## As of 2017-11-23, 12 platforms listed https://cran.r-project.org/web/checks/check_flavors.html
-n_cran_platforms <- 13L
-
 cran_url <- function(protocol = "https") {
   protocol <- match.arg(protocol, c("https", "http", "ftp"))
   if (identical(protocol, "ftp")) {
@@ -187,11 +183,14 @@ print_all_clear <- function(pkgs) {
   )))
 }
 
-get_pkg_with_results <- function(tbl_pkg, what, compact = FALSE, print_ok, ...) {
+get_pkg_with_results <- function(tbl_pkg,
+                                 what,
+                                 compact = FALSE,
+                                 print_ok, ...) {
   what <- match.arg(what, names(tbl_pkg)[-1])
 
   if (identical(what, "ok")) {
-    pkg_all_clear <- tbl_pkg[["package"]][tbl_pkg[["ok"]] == n_cran_platforms]
+    pkg_all_clear <- tbl_pkg[["package"]][tbl_pkg[["ok"]] == n_cran_flavors()]
     if (length(pkg_all_clear) && print_ok) {
       print_all_clear(pkg_all_clear)
     }

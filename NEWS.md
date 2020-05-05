@@ -1,3 +1,10 @@
+# v1.2.1
+
+* The number of CRAN check flavors is back to 12. A new function
+  `n_cran_flavors` reads the table on the CRAN website that lists the number of
+  flavors, caches, and returns this number. This is a more robust way to ensure
+  that the number of flavors (used in the package) is always accurate.
+
 # v1.1.5
 
 * internally replaced `as.tibble` with `as_tibble`
