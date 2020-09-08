@@ -1,8 +1,24 @@
 # foghorn
 
+# v1.3.1
+
+## New feature
+
+* Implement scrapping of Win-builder queue (#40 suggested by @krlmlr).
+
+## Other changes
+
+* In `cran_incoming()` and `winbuilder_queue()` the version numbers in the
+  tibbles are of class `package_version` (suggested by @krlmlr).
+* `cran_incoming()` output includes the size of the tarball archive.
+* `cran_incoming()` returns a zero-row tibble instead of `NULL` when the
+  inspected folder is empty.
+* The argument `progress` was not documented (and not implemented properly) for
+  `cran_results()` and `cran_details()`.
+
 # v1.2.3
 
-- The number of CRAN check flavors is back to 12.
+* The number of CRAN check flavors is back to 12.
 
 # v1.2.2
 

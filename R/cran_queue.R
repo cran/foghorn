@@ -1,22 +1,51 @@
+new_cran_q <- function(package = character(0),
+                       version = as.package_version(character(0)),
+                       cran_folder = character(0),
+                       time = as.POSIXct(character(0)),
+                       size = integer(0)) {
+  stopifnot(is.character(package))
+  stopifnot(is.package_version(version))
+  stopifnot(is.character(cran_folder))
+  stopifnot(inherits(time, "POSIXct"))
+  stopifnot(is.integer(size))
+
+  tibble::tibble(
+    package,
+    version,
+    cran_folder,
+    time,
+    size
+  )
+}
+
 parse_cran_incoming <- function(res) {
   if (length(res$content) == 0) {
-    return(NULL)
+    return(new_cran_q())
   }
+
   rr <- read.table(
     text = rawToChar(res$content),
     stringsAsFactors = FALSE
   )
-  folders <- rr$V9
+
+  ## people sometimes upload other stuff to the FTP server
+  rr <- rr[grepl("\\.tar.gz$", rr$V9), ]
+
+  pkgs <- parse_pkg(rr$V9)
+  ## the server doesn't return the year???
   year <- substr(Sys.time(), 1, 4)
   ## avoid need for locale-dependent month name match
   ##  (CRAN FTP info uses English abbrevs)
   month <- match(rr$V6, month.abb)
   timestr <- with(rr, sprintf("%d-%s-%s %s", V7, month, year, V8))
   time <- as.POSIXct(timestr, format = "%d-%m-%Y %H:%M")
-  tibble::tibble(
+
+  new_cran_q(
+    package = pkgs$package,
+    version = pkgs$version,
     cran_folder = basename(res$url),
     time = time,
-    packages = folders
+    size = rr$V5
   )
 }
 
@@ -25,9 +54,49 @@ parse_pkg <- function(pkg) {
   pkg <- strsplit(pkg, "_")
   tibble::tibble(
     package = vapply(pkg, function(x) x[1], character(1)),
-    version = vapply(pkg, function(x) x[2], character(1))
+    version = as.package_version(vapply(pkg, function(x) x[2], character(1)))
   )
 }
+
+## internal function to scrape content of FTP server, used by `cran_incoming`
+## and `winbuilder_queue`.
+cran_ftp <- function(pkg, folders, url) {
+  if (!is.null(pkg) &&
+    (!is.character(pkg) || any(is.na(pkg)))) {
+    stop(sQuote("pkg"), " must be a character vector.")
+  }
+
+  sub_folders <- paste0(folders, "/")
+
+  pool <- curl::new_pool()
+
+  res_data <- list()
+
+  success <- function(res) {
+    res_data <<- c(res_data, list(res))
+  }
+
+  fail <- function(res) {
+    warning("Server returned error: ", res, call. = FALSE)
+  }
+
+  for (sf in seq_along(sub_folders)) {
+    curl::curl_fetch_multi(paste0(
+      url, "/", sub_folders[sf]
+    ),
+    pool = pool, done = success, fail = fail
+    )
+  }
+  res_qry <- curl::multi_run(pool = pool)
+
+  ## check for errors
+  if (res_qry$error > 0) {
+    warning("One of the folders didn't work.", call. = FALSE)
+  }
+
+  res_data
+}
+
 
 ##' Check where your package stands in the CRAN incoming queue.
 ##'
@@ -72,6 +141,7 @@ parse_pkg <- function(pkg) {
 ##' \item{version}{package version}
 ##' \item{cran_folder}{folder where the package was found}
 ##' \item{time}{date/time package was entered in the folder}
+##' \item{size}{the size of the package tarball}
 ##' }
 ##'
 ##' @examples
@@ -84,59 +154,27 @@ parse_pkg <- function(pkg) {
 ##' @references
 ##' \itemize{
 ##' \item Hornik, Ligges and Zeileis. "Changes on CRAN: 2017-12-01 to 2018-06-30", R Journal 10(1), July 2018. \url{https://journal.r-project.org/archive/2018-1/cran.pdf}
-##' \item  Maëlle Salmon, Locke Data, Stephanie Locke, Mitchell O'Hara-Wild, Hugo Gruson. "CRAN incoming dashboard", \url{https://cransays.itsalocke.com/articles/dashboard.html}
+##' \item  Maëlle Salmon, Locke Data, Stephanie Locke, Mitchell O'Hara-Wild, Hugo Gruson. "CRAN incoming dashboard", \url{https://lockedata.github.io/cransays/articles/dashboard.html}
 ##' }
+##' @seealso cran_winbuilder
 ##' @importFrom utils read.table
 ##' @export
 ##' @md
 cran_incoming <- function(pkg = NULL,
                           folders = c("newbies", "inspect", "pretest", "recheck", "pending", "publish", "archive", "waiting")) {
-  if (!is.null(pkg) &&
-    (!is.character(pkg) || any(is.na(pkg)))) {
-    stop(sQuote("pkg"), " must be a character vector.")
-  }
-
   folders <- match.arg(folders, several.ok = TRUE)
 
-  cran_incoming_url <- "ftp://cran.r-project.org/incoming/"
-
-  sub_folders <- paste0(folders, "/")
-
-  pool <- curl::new_pool()
-
-  res_data <- list()
-
-  success <- function(res) {
-    res_data <<- c(res_data, list(res))
-  }
-
-  fail <- function(res) {
-    warning("Server returned error: ", res, call. = FALSE)
-  }
-
-  for (sf in seq_along(sub_folders)) {
-    curl::curl_fetch_multi(paste0(
-      cran_incoming_url, "/", sub_folders[sf]
-    ),
-    pool = pool, done = success, fail = fail
-    )
-  }
-  res_qry <- curl::multi_run(pool = pool)
-
-  ## check for errors
-  if (res_qry$error > 0) {
-    warning("One of the folders didn't work.", call. = FALSE)
-  }
+  res_data <- cran_ftp(
+    pkg = pkg,
+    folders = folders,
+    url = "ftp://cran.r-project.org/incoming/"
+  )
 
   res <- lapply(res_data, function(x) parse_cran_incoming(x))
   res <- do.call("rbind", res)
-  res <- cbind(res, parse_pkg(res$packages))
-
-  res <- tibble::as_tibble(res[, c("package", "version", "cran_folder", "time")])
-  res$cran_folder <- factor(res$cran_folder, levels = folders)
 
   if (!is.null(pkg)) {
-    res <- res[ res$package %in% pkg, ]
+    res <- res[res$package %in% pkg, ]
   }
   res
 }
