@@ -58,9 +58,6 @@ parse_http_cran_incoming <- function(res_raw) {
 parse_pkg_version <- function(pkg) {
   vapply(
     pkg, function(x) {
-      if (is.na(x[2])) {
-        return("0.0.0")
-      }
       x[2]
     },
     character(1)
@@ -72,13 +69,13 @@ parse_pkg <- function(pkg) {
   pkg <- strsplit(pkg, "_")
   tibble::tibble(
     package = vapply(pkg, function(x) x[1], character(1)),
-    version = as.package_version(parse_pkg_version(pkg))
+    version = package_version(parse_pkg_version(pkg), strict = FALSE)
   )
 }
 
-## internal function to scrape content of FTP server, used by `cran_incoming`
-## and `winbuilder_queue`.
-cran_ftp <- function(pkg, folders, url) {
+## internal function to scrape content of CRAN queue servers, used by
+## `cran_incoming` and `winbuilder_queue`.
+cran_queue <- function(pkg, folders, url) {
   if (!is.null(pkg) &&
     (!is.character(pkg) || any(is.na(pkg)))) {
     stop(sQuote("pkg"), " must be a character vector.")
@@ -151,7 +148,7 @@ cran_ftp <- function(pkg, folders, url) {
 ##' @title List packages in CRAN incoming queue.
 ##' @param pkg Optionally provide a vector of package names to limit the results
 ##'     to these packages.
-##' @param folders Which folders of the CRAN FTP site do you want to inspect? Default:
+##' @param folders Which folders of the CRAN queue do you want to inspect? Default:
 ##'     all the non-human folders.
 ##' @return A `tibble` with the following columns:
 ##' \describe{
@@ -162,7 +159,7 @@ cran_ftp <- function(pkg, folders, url) {
 ##' \item{size}{the size of the package tarball}
 ##' }
 ##'
-##' Note that if the package version is not provided, it will appear as `0.0.0`
+##' Note that if the package version is not provided, it will appear as `NA`
 ##' in the `tibble`.
 ##'
 ##' @examples
@@ -185,7 +182,7 @@ cran_incoming <- function(pkg = NULL,
                           folders = c("newbies", "inspect", "pretest", "recheck", "pending", "publish", "archive", "waiting")) {
   folders <- match.arg(folders, several.ok = TRUE)
 
-  res_data <- cran_ftp(
+  res_data <- cran_queue(
     pkg = pkg,
     folders = folders,
     url = "https://cran.r-project.org/incoming/"

@@ -1,6 +1,6 @@
 Package: foghorn
 Title: Summarize CRAN Check Results in the Terminal
-Version: 1.4.1
+Version: 1.4.2
 Authors@R: 
     c(person(given = "Francois",
              family = "Michonneau",
@@ -25,9 +25,9 @@ Encoding: UTF-8
 Language: en-US
 RoxygenNote: 7.1.1.9001
 NeedsCompilation: no
-Packaged: 2021-05-31 09:18:43 UTC; francois
+Packaged: 2021-07-11 10:18:27 UTC; francois
 Author: Francois Michonneau [aut, cre],
   Ben Bolker [ctb]
 Maintainer: Francois Michonneau <francois.michonneau@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-05-31 09:30:02 UTC
+Date/Publication: 2021-07-11 10:30:02 UTC
