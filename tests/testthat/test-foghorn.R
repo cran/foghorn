@@ -11,6 +11,7 @@ test_that(
 ## fail for invalid package name/emails
 
 test_that("invalid package name", {
+  skip_on_cran()
   expect_error(
     cran_results(pkg = "foobarfoobar"),
     "Invalid package name"
@@ -18,6 +19,7 @@ test_that("invalid package name", {
 })
 
 test_that("invalid email address", {
+  skip_on_cran()
   expect_error(
     cran_results(email = "foobar"),
     "Malformed email address"
@@ -192,8 +194,8 @@ test_that("error if both email and pkg are specified", {
 })
 
 test_that("error if more than one package", {
-  msg <- "must be a string"
   skip_on_cran()
+  msg <- "must be a string"
   expect_error(
     visit_cran_check(pkg = c("foo", "bar")),
     msg
@@ -206,8 +208,8 @@ test_that("error if more than one package", {
 
 
 test_that("error if more than one email address", {
-  msg <- "must be a string"
   skip_on_cran()
+  msg <- "must be a string"
   expect_error(
     visit_cran_check(email = c("foo", "bar")),
     msg
@@ -273,7 +275,7 @@ test_that("output of summary cran results", {
   )
 
   pkg_with_warn <- sample(
-    unique(cran_res$package[cran_res$status == "WARN"]),
+    unique(cran_res$package[cran_res$status == "WARNING"]),
     5
   )
   ## nolint start
@@ -284,8 +286,14 @@ test_that("output of summary cran results", {
   ## nolint end
 
   ## all have >= 1 values in column WARNING
-  expect_true(all(cran_results(pkg = pkg_with_warn, src = "website")$warn > 0))
-  expect_true(all(cran_results(pkg = pkg_with_warn, src = "crandb")$warn > 0))
+  expect_true({
+    message("Checking: ", paste(pkg_with_warn, collapse = ", "))
+    all(cran_results(pkg = pkg_with_warn, src = "website")$warn > 0) 
+  })
+  expect_true({
+    message("Checking: ", paste(pkg_with_warn, collapse = ", "))
+    all(cran_results(pkg = pkg_with_warn, src = "crandb")$warn > 0)
+  })
   ## all are listed under packages with WARNING
   expect_message(
     summary_cran_results(pkg = pkg_with_warn),
@@ -316,7 +324,7 @@ test_that("output of summary cran results", {
   )
 
   pkg_with_fail <- sample(
-    unique(cran_res$package[cran_res$status == "FAIL"]),
+    unique(cran_res$package[cran_res$status == "FAILURE"]),
     5
   )
 
@@ -449,9 +457,8 @@ test_that("output of cran_details", {
   expect_silent(summary(cran_pkg_with_ok, show_log = TRUE, print_ok = FALSE))
 })
 
-### CRAN tests ----------------------------------------------------------------
-
 test_that("check output for MASS", {
+  skip_on_cran()
   if (curl::has_internet()) {
     res <- cran_results(pkg = "MASS")
     expect_true(validate_cran_results(res))
