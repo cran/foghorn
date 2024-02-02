@@ -35,7 +35,9 @@ clean_connection <- function(x) {
   on.exit(clean_connection(x), add = TRUE)
 
   req <- httr2::request(x)
-  httr2::multi_req_perform(list(req))[[1]]
+  httr2::req_perform_parallel(
+    list(req), on_error = "continue", progress = FALSE
+  )[[1]]
 }
 
 
@@ -82,8 +84,9 @@ handle_cran_web_issues <- function(input, res, msg_404, msg_other) {
     msgs <- vapply(res[is_404], function(x) x$message, character(1))
     stop(msg_404,
       paste(
-        sQuote(input[is_404]), collapse = ", "), ".\n",
-        "Error: ", paste(sQuote(msgs), collapse = ", "), ".", 
+        sQuote(input[is_404]), collapse = ", "
+      ), ".\n",
+      "Error: ", paste(sQuote(msgs), collapse = ", "),
       call. = FALSE
     )
   }
@@ -145,13 +148,15 @@ all_packages_by_email <- function(x) {
   xml2::xml_text(xml2::xml_find_all(x, ".//h3/@id"))
 }
 
+##' @export
 all_packages.cran_checks_email <- function(parsed, ...) {
   lapply(parsed, all_packages_by_email)
 }
 
+##' @export
 all_packages.cran_checks_pkg <- function(parsed, ...) {
   lapply(parsed, function(x) {
-    res <- xml2::xml_find_all(x, ".//h2/a/text()")
+    res <- xml2::xml_find_all(x, ".//h2/a/span/text()")
     gsub("\\s", "", xml2::xml_text(res))
   })
 }

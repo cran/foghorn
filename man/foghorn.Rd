@@ -2,6 +2,7 @@
 % Please edit documentation in R/foghorn-package.R
 \docType{package}
 \name{foghorn}
+\alias{foghorn-package}
 \alias{foghorn}
 \title{CRAN check results at the terminal}
 \description{
@@ -10,8 +11,30 @@ terminal. This package is intended for developers that have
 published packages on CRAN. The results of the checks can be
 summarized as a tibble (see \code{\link{cran_results}}), or
 as \dQuote{pretty} terminal output (see
-\code{\link{summary_cran_results}}).  The package also provides
+\code{\link{summary_cran_results}}). The package provides
 functions to view the logs of the CRAN check results (see
 \code{\link{cran_details}}), or to visit the web pages hosted
 by CRAN (see \code{\link{visit_cran_check}}).
+You can also use \code{foghorn} to follow your package during
+its submission process to CRAN or to WinBuilder with,
+\code{\link{cran_incoming}} and \code{\link{winbuilder_queue}}.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://fmichonneau.github.io/foghorn/}
+  \item \url{https://github.com/fmichonneau/foghorn}
+  \item Report bugs at \url{https://github.com/fmichonneau/foghorn/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Francois Michonneau \email{francois.michonneau@gmail.com}
+
+Other contributors:
+\itemize{
+  \item Ben Bolker [contributor]
+}
+
+}
+\keyword{internal}
