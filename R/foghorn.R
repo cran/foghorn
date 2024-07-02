@@ -196,10 +196,15 @@ add_other_issues <- function(tbl, parsed, ...) {
 }
 
 print_all_clear <- function(pkgs) {
-  message(crayon::green(paste0(
-    clisymbols::symbol$tick, " All clear for ",
-    paste0(pkgs, collapse = ", "), "!"
-  )))
+  cli::cli_alert_success("All clear for {pkgs}!")
+}
+
+pkg_all_clear <- function(tbl_pkg) {
+  tbl_pkg[["package"]][tbl_pkg[["ok"]] == n_cran_flavors() & !tbl_pkg[["has_other_issues"]]]
+}
+
+pkg_with_issues <- function(tbl_pkg) {
+  tbl_pkg[["package"]][!tbl_pkg[["package"]] %in% pkg_all_clear(tbl_pkg)]
 }
 
 get_pkg_with_results <- function(tbl_pkg,
@@ -209,9 +214,8 @@ get_pkg_with_results <- function(tbl_pkg,
   what <- match.arg(what, names(tbl_pkg)[-1])
 
   if (identical(what, "ok")) {
-    pkg_all_clear <- tbl_pkg[["package"]][tbl_pkg[["ok"]] == n_cran_flavors()]
-    if (length(pkg_all_clear) && print_ok) {
-      print_all_clear(pkg_all_clear)
+    if (length(pkg_all_clear(tbl_pkg)) && print_ok) {
+      print_all_clear(pkg_all_clear(tbl_pkg))
     }
     return(NULL)
   }
@@ -233,10 +237,14 @@ get_pkg_with_results <- function(tbl_pkg,
     } else {
       sptr <- c("  - ", "\n")
     }
-    res <- paste0(sptr[1], tbl_pkg$package[!is.na(tbl_pkg[[what]]) &
-      tbl_pkg[[what]] > 0],
-    n,
-    collapse = sptr[2]
+    cond <- !is.na(tbl_pkg[[what]]) & tbl_pkg[[what]] > 0
+    deadline_date <- tbl_pkg$deadline[cond]
+    deadline_date[is.na(deadline_date)] <- ""
+    deadline_date <- ifelse(nzchar(deadline_date), paste0(" [Fix before: ", deadline_date, "]"), "")
+    res <- paste0(sptr[1], tbl_pkg$package[cond],
+      n,
+      deadline_date,
+      collapse = sptr[2]
     )
   } else {
     res <- NULL
@@ -244,6 +252,7 @@ get_pkg_with_results <- function(tbl_pkg,
   print_summary_cran(what, res, compact)
 }
 
+##' @importFrom cli style_bold
 print_summary_cran <- function(type = c(
                                  "ok", "error", "fail", "warn",
                                  "note", "has_other_issues"
@@ -274,7 +283,7 @@ print_summary_cran <- function(type = c(
     paste0(
       foghorn_components[[type]]$symbol,
       msg, nl,
-      crayon::bold(pkgs)
+      cli::style_bold(pkgs)
     )
   ))
 }

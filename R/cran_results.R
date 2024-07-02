@@ -1,14 +1,27 @@
-cran_results_web <- function(email, pkg, ...) {
+cran_results_web <- function(email, pkg, include_deadline, max_requests, ...) {
   res <- NULL
+  check_n_requests(email, pkg, max_requests = max_requests)
   if (!is.null(email)) {
     res_email <- read_cran_web_from_email(email, ...)
     res <- cran_checks_table(res_email)
     res <- add_other_issues(res, res_email)
+    deadline_res <- deadline_pkg_web(
+      res[["package"]],
+      include_deadline = include_deadline,
+      max_requests = max_requests
+    )
+    res <- add_deadline(res, deadline_res)
   }
   if (!is.null(pkg)) {
     res_pkg <- read_cran_web_from_pkg(pkg, ...)
     tbl_pkg <- cran_checks_table(res_pkg)
     res_pkg <- add_other_issues(tbl_pkg, res_pkg)
+    deadline_pkg <- deadline_pkg_web(
+      pkg,
+      include_deadline = include_deadline,
+      max_requests = max_requests
+    )
+    res_pkg <- add_deadline(res_pkg, deadline_pkg)
     res <- rbind(res, res_pkg)
   }
   res
@@ -21,11 +34,13 @@ cran_results_crandb <- function(email, pkg, ...) {
     res_email <- read_crandb_from_email(email, ...)
     res <- cran_checks_table(res_email)
     res <- add_other_issues_crandb(res)
+    res <- add_deadline(res, deadline_email_crandb(email))
   }
   if (!is.null(pkg)) {
     res_pkg <- read_crandb_from_pkg(pkg, ...)
     tbl_pkg <- cran_checks_table(res_pkg)
     res_pkg <- add_other_issues_crandb(tbl_pkg)
+    res_pkg <- add_deadline(res_pkg, deadline_pkg_crandb(pkg))
     res <- rbind(res_pkg, res)
   }
   res
@@ -43,26 +58,34 @@ cran_results_crandb <- function(email, pkg, ...) {
 ##'
 ##' @title Table of the CRAN check results
 ##' @export
-##' @param email email address for package maintainers (character
-##'     vector)
+##' @param email email address for package maintainers (character vector)
 ##' @param pkg package names (character vector)
-##' @param show columns of the data frame to show (all are shown by
-##'     default)
+##' @param show columns of the data frame to show (all are shown by default).
+##'   See 'Details' for more information.
 ##' @template src
+##' @param max_requests maximum number of requests allowed to be performed,
+##'   ignored when using `src = "crandb"`. Use `Inf` to skip this check. (See
+##'   Details).
 ##' @template dots
 ##' @template details
-##' @return a data frame that tabulates the number of CRAN flavors
-##'     that return errors, warnings, notes, or OK for the packages.
+##' @return a data frame that tabulates the number of CRAN flavors that return
+##'   errors, warnings, notes, or OK for the packages. See 'Details' section for
+##'   more information about the `Deadline` column.
 ##' @examples
 ##'   \dontrun{
 ##'     cran_results(pkg="MASS")
 ##'   }
 cran_results <- function(email = NULL, pkg = NULL,
-                         show = c("error", "fail", "warn", "note", "ok"),
-                         src = c("website", "crandb"), ...) {
+                         show = getOption("foghorn_columns", c("error", "fail", "warn", "note", "ok", "deadline")),
+                         src = c("website", "crandb"),
+                         max_requests = 50, ...) {
+
   show <- tolower(show)
   show <- match.arg(show, several.ok = TRUE)
   show <- c("package", show, "has_other_issues")
+
+  include_deadline <- "deadline" %in% show
+  stopifnot(rlang::is_scalar_logical(include_deadline) && !is.na(include_deadline))
 
   src <- match.arg(src, c("website", "crandb"))
 
@@ -74,7 +97,13 @@ cran_results <- function(email = NULL, pkg = NULL,
   }
 
   if (identical(src, "website")) {
-    res <- cran_results_web(email, pkg, ...)
+    res <- cran_results_web(
+      email,
+      pkg,
+      include_deadline = include_deadline,
+      max_requests = max_requests,
+      ...
+    )
   } else if (identical(src, "crandb")) {
     res <- cran_results_crandb(email, pkg, ...)
   }
@@ -117,8 +146,7 @@ cran_results <- function(email = NULL, pkg = NULL,
 ##'     notes on the CRAN flavors. The number in parenthesis after
 ##'     the name of the packages indicates the number of CRAN
 ##'     flavors that produce these results.
-##' @importFrom crayon red yellow blue bold cyan magenta
-##' @importFrom clisymbols symbol
+##' @importFrom cli col_red col_yellow col_blue style_bold col_cyan col_magenta symbol
 ##' @export
 summary_cran_results <- function(email = NULL, pkg = NULL,
                                  compact = FALSE, print_ok = TRUE, ...) {

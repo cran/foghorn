@@ -61,6 +61,22 @@ CRAN website. If you only need to check a few packages, this is a
 good option. If you choose \code{src = "crandb"} the RDS files
 (about 20Mb) are downloaded first from the CRAN servers.
 
+The option \code{max_requests} can be used to limit how many pages will be
+scrapped from the CRAN website. The default is set to 50, use \code{Inf} to
+ignore this check. Consider using \code{src = "crandb"} if you need to get data
+from many packages or maintainers. Note that this an approximation of the
+number of requests that will be performed and there will be situations where
+more requests than this limit will be performed to retrieve the results.
+
+The \code{deadline} column contains the date set by CRAN to fix issues with the
+CRAN checks before the package gets archived. If the existence of a deadline
+has been checked but no date has been set by the CRAN Maintainers, the
+\code{deadline} column for the package will be set to \code{""}. If there is a
+deadline, the content will be a date stored as \code{character}.
+
+The value of the argument \code{show} can be set using the local option
+\code{foghorn_columns}.
+
 When choosing \code{src = "crandb"} you can also specify the
 following options:
 \itemize{

@@ -37,7 +37,7 @@ cran_details_from_web <- function(pkg, ...) {
     res_idx <- grep("^Result:", p)
     flv_idx <- grep("^Flavors?:", p)
     if (!identical(length(chk_idx), length(res_idx)) &&
-      !identical(length(chk_idx), length(flv_idx))) {
+          !identical(length(chk_idx), length(flv_idx))) {
       stop("File an issue on Github indicating the name of your package.")
     }
     msg <- mapply(function(c, v, r, f) {
@@ -157,7 +157,7 @@ cran_details_from_crandb <- function(pkg, ...) {
 ##'     check results, the nature of the result (\code{WARN}, \code{ERROR},
 ##'     \code{FAIL}, \code{NOTE}, or other issues).
 ##' @export
-##' @importFrom crayon bold
+##' @importFrom cli style_bold
 cran_details <- function(pkg, src = c("website", "crandb"),
                          ...) {
   if (!is.character(pkg)) {
@@ -178,13 +178,13 @@ cran_details <- function(pkg, src = c("website", "crandb"),
 }
 
 
-##' @importFrom clisymbols symbol
+##' @importFrom cli symbol
 render_flavors <- function(x) {
   ## transform the comma separated list of platform flavors into
   ## unordered list
   if (!is.na(x)) {
     res <- unlist(strsplit(x, ", "))
-    paste("  ", clisymbols::symbol$pointer, res, "\n")
+    paste("  ", cli::symbol$pointer, res, "\n")
   } else {
     ""
   }
@@ -219,8 +219,8 @@ filter_pkg_ok <- function(res) {
 ##' @template print_ok
 ##' @rdname cran_details
 ##' @export
-##' @importFrom crayon green
-##' @importFrom clisymbols symbol
+##' @importFrom cli col_green
+##' @importFrom cli symbol
 summary.cran_details <- function(object, show_log = TRUE, print_ok = TRUE, ...) {
   res_ok <- filter_pkg_ok(object)
 
@@ -245,7 +245,7 @@ summary.cran_details <- function(object, show_log = TRUE, print_ok = TRUE, ...) 
       cat( ## Type of CRAN message
         cmpt$color(paste0(
           cmpt$symbol, " ",
-          crayon::bold(paste0(package, " - ", result)),
+          cli::style_bold(paste0(package, " - ", result)),
           ": ", check
         )), "\n",
         ## Flavors concerned

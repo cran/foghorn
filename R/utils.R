@@ -44,9 +44,29 @@ add_cols <- function(tbl) {
   convert_nas(tbl)[, names(default_cran_results)]
 }
 
+check_n_requests <- function(..., max_requests) {
+  stopifnot(
+    identical(length(max_requests), 1L),
+    is.numeric(max_requests),
+    max_requests >= 1
+  )
+  if (is.infinite(max_requests)) {
+    return(NULL)
+  }
+  elements <- list(...)
+  if (sum(lengths(elements)) > max_requests) {
+    stop(
+      "This query would require more than ", max_requests,
+      " web requests. Consider using ", sQuote("src = \"crandb\""),
+      " before increasing the number of requests allowed.",
+      call. = FALSE
+    )
+  }
+}
+
+
 
 ### for devtools::release()
-
 release_questions <- function() {
   c("Did you re-render the vignettes by running `make_vignettes()` (in `vignettes/`)?")
 }
